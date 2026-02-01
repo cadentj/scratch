@@ -5,7 +5,9 @@ import matplotlib.pyplot as plt
 import numpy as np
 from datetime import datetime
 from collections import defaultdict
-from estimate import estimate_model_size
+from utils import estimate_model_size, smooth_data
+
+OMIT_KEYWORD = "405b"
 
 # Load data
 print("Loading data-15m.json...")
@@ -37,6 +39,10 @@ for frame in frames:
     model_key = labels.get('model_key', 'unknown')
     repo_id = get_repo_id(model_key)
     
+    if OMIT_KEYWORD in repo_id.lower():
+        print(f"  Skipping {repo_id} because it contains {OMIT_KEYWORD}")
+        continue
+
     if not repo_id:
         continue
 
@@ -79,22 +85,6 @@ ROLLING_WINDOW = 24
 top_n_configs = [1, 2, 4, 8, 16, len(all_models)]
 config_labels = ['Top 1', 'Top 2', 'Top 4', 'Top 8', 'Top 16', f'All ({len(all_models)})']
 config_colors = ['tab:blue', 'tab:orange', 'tab:green', 'tab:red', 'tab:purple', 'tab:brown']
-
-# Smoothing window (2 hours = 8 slots)
-SMOOTHING_WINDOW = 8
-
-def smooth_data(data, window_size=SMOOTHING_WINDOW):
-    """Apply a centered rolling mean to smooth the data."""
-    data = np.array(data, dtype=float)
-    kernel = np.ones(window_size) / window_size
-    smoothed = np.convolve(data, kernel, mode='same')
-    # Fix edge effects
-    for i in range(window_size // 2):
-        left_window = i + 1
-        smoothed[i] = np.mean(data[:left_window + window_size // 2])
-        right_idx = len(data) - 1 - i
-        smoothed[right_idx] = np.mean(data[right_idx - window_size // 2:])
-    return smoothed
 
 def compute_rolling_metrics_top_n(sorted_ts, window_data, model_size_cache, model_rank, top_n, window_size):
     """
@@ -180,10 +170,6 @@ ax3.grid(True, alpha=0.3)
 
 plt.xticks(rotation=45)
 plt.tight_layout()
-
-output_file = 'top_models_breakdown.png'
-plt.savefig(output_file, dpi=150, bbox_inches='tight')
-print(f"Plot saved to {output_file}")
 plt.show()
 
 # Print summary statistics

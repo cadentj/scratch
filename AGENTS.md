@@ -1,0 +1,1 @@
+- For plotting scripts, please do not export as an image unless I explicitly ask. I often use the scripts in a notebook environment so I can already see the plot.

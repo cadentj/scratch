@@ -5,7 +5,9 @@ import matplotlib.pyplot as plt
 import numpy as np
 from datetime import datetime
 from collections import defaultdict
-from estimate import estimate_model_size
+from utils import estimate_model_size, smooth_data
+
+OMIT_KEYWORD = "405b"
 
 # Load data
 print("Loading data-15m.json...")
@@ -34,6 +36,10 @@ for frame in frames:
     model_key = labels.get('model_key', 'unknown')
     repo_id = get_repo_id(model_key)
     
+    if OMIT_KEYWORD in repo_id.lower():
+        print(f"  Skipping {repo_id} because it contains {OMIT_KEYWORD}")
+        continue
+
     if not repo_id:
         continue
 
@@ -74,23 +80,6 @@ window_colors = {
     '6h': 'tab:orange',
     '24h': 'tab:red',
 }
-
-# Smoothing window size (2 hours = 8 slots of 15-min each)
-SMOOTHING_WINDOW = 8
-
-def smooth_data(data, window_size=SMOOTHING_WINDOW):
-    """Apply a centered rolling mean to smooth the data."""
-    data = np.array(data, dtype=float)
-    kernel = np.ones(window_size) / window_size
-    # Use 'same' mode and handle edges with valid data
-    smoothed = np.convolve(data, kernel, mode='same')
-    # Fix edge effects by using smaller windows at the edges
-    for i in range(window_size // 2):
-        left_window = i + 1
-        smoothed[i] = np.mean(data[:left_window + window_size // 2])
-        right_idx = len(data) - 1 - i
-        smoothed[right_idx] = np.mean(data[right_idx - window_size // 2:])
-    return smoothed
 
 def compute_rolling_metrics(sorted_ts, window_data, model_size_cache, window_size):
     """
@@ -188,10 +177,6 @@ ax3.grid(True, alpha=0.3)
 # Improve x-axis formatting
 plt.xticks(rotation=45)
 plt.tight_layout()
-
-output_file = 'window_stats_analysis.png'
-plt.savefig(output_file, dpi=150, bbox_inches='tight')
-print(f"Plot saved to {output_file}")
 plt.show()
 
 # Print summary statistics
