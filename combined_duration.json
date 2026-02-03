@@ -1,0 +1,92 @@
+[
+    {
+      "schema": {
+        "refId": "A",
+        "meta": {
+          "typeVersion": [
+            0,
+            0
+          ],
+          "executedQueryString": "data = from(bucket: \"metrics\")\n  |> range(start: -30d)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"request_status_time\")\n  |> filter(fn: (r) => r[\"_field\"] == \"request_status_time\")\n  |> filter(fn: (r) => r[\"status\"] == \"RUNNING\")\n  |> group()\n\np5 = data |> quantile(q: 0.05) |> set(key: \"percentile\", value: \"p5\")\np10 = data |> quantile(q: 0.10) |> set(key: \"percentile\", value: \"p10\")\np15 = data |> quantile(q: 0.15) |> set(key: \"percentile\", value: \"p15\")\np20 = data |> quantile(q: 0.20) |> set(key: \"percentile\", value: \"p20\")\np25 = data |> quantile(q: 0.25) |> set(key: \"percentile\", value: \"p25\")\np30 = data |> quantile(q: 0.30) |> set(key: \"percentile\", value: \"p30\")\np35 = data |> quantile(q: 0.35) |> set(key: \"percentile\", value: \"p35\")\np40 = data |> quantile(q: 0.40) |> set(key: \"percentile\", value: \"p40\")\np45 = data |> quantile(q: 0.45) |> set(key: \"percentile\", value: \"p45\")\np50 = data |> quantile(q: 0.50) |> set(key: \"percentile\", value: \"p50\")\np55 = data |> quantile(q: 0.55) |> set(key: \"percentile\", value: \"p55\")\np60 = data |> quantile(q: 0.60) |> set(key: \"percentile\", value: \"p60\")\np65 = data |> quantile(q: 0.65) |> set(key: \"percentile\", value: \"p65\")\np70 = data |> quantile(q: 0.70) |> set(key: \"percentile\", value: \"p70\")\np75 = data |> quantile(q: 0.75) |> set(key: \"percentile\", value: \"p75\")\np80 = data |> quantile(q: 0.80) |> set(key: \"percentile\", value: \"p80\")\np85 = data |> quantile(q: 0.85) |> set(key: \"percentile\", value: \"p85\")\np90 = data |> quantile(q: 0.90) |> set(key: \"percentile\", value: \"p90\")\np95 = data |> quantile(q: 0.95) |> set(key: \"percentile\", value: \"p95\")\np100 = data |> quantile(q: 1.00) |> set(key: \"percentile\", value: \"p100\")\n\nunion(tables: [p5, p10, p15, p20, p25, p30, p35, p40, p45, p50, p55, p60, p65, p70, p75, p80, p85, p90, p95, p100])\n  |> group()\n  |> keep(columns: [\"percentile\", \"_value\"])\n  |> rename(columns: {_value: \"runtime_seconds\"})"
+        },
+        "fields": [
+          {
+            "name": "runtime_seconds",
+            "type": "number",
+            "typeInfo": {
+              "frame": "float64",
+              "nullable": true
+            },
+            "labels": {},
+            "config": {
+              "custom": {
+                "hidden": false
+              }
+            }
+          },
+          {
+            "name": "percentile",
+            "type": "string",
+            "typeInfo": {
+              "frame": "string",
+              "nullable": true
+            },
+            "labels": {},
+            "config": {
+              "custom": {
+                "hidden": false
+              }
+            }
+          }
+        ]
+      },
+      "data": {
+        "values": [
+          [
+            0.20550332207813424,
+            0.21143131617973795,
+            0.21605267728203872,
+            0.222225282209101,
+            0.22909429943271975,
+            0.23383899765703514,
+            0.23783082766928415,
+            0.24164874347499354,
+            0.24716885849395395,
+            0.25501586038118007,
+            0.266787012990677,
+            0.2761481029579088,
+            0.29691131765213513,
+            0.37075682262059817,
+            1.5807471787130334,
+            2.507600271223861,
+            6.339836941930891,
+            8.409343860381695,
+            13.347025833144807,
+            7497.794036388397
+          ],
+          [
+            "p5",
+            "p10",
+            "p15",
+            "p20",
+            "p25",
+            "p30",
+            "p35",
+            "p40",
+            "p45",
+            "p50",
+            "p55",
+            "p60",
+            "p65",
+            "p70",
+            "p75",
+            "p80",
+            "p85",
+            "p90",
+            "p95",
+            "p100"
+          ]
+        ]
+      }
+    }
+  ]
