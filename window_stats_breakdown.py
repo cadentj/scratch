@@ -7,7 +7,8 @@ from datetime import datetime
 from collections import defaultdict
 from utils import estimate_model_size, smooth_data
 
-OMIT_KEYWORD = "405b"
+# OMIT_KEYWORD = "405b"
+OMIT_KEYWORD = None
 
 # Load data
 print("Loading data-15m.json...")
@@ -39,7 +40,7 @@ for frame in frames:
     model_key = labels.get('model_key', 'unknown')
     repo_id = get_repo_id(model_key)
     
-    if OMIT_KEYWORD in repo_id.lower():
+    if OMIT_KEYWORD is not None and OMIT_KEYWORD in repo_id.lower():
         print(f"  Skipping {repo_id} because it contains {OMIT_KEYWORD}")
         continue
 
@@ -79,7 +80,7 @@ sorted_ts = sorted(window_data.keys())
 plot_times = [datetime.fromtimestamp(ts / 1000.0) for ts in sorted_ts]
 
 # 6-hour rolling window (24 slots of 15-min)
-ROLLING_WINDOW = 24
+ROLLING_WINDOW = 8
 
 # Top N configurations to compare
 top_n_configs = [1, 2, 4, 8, 16, len(all_models)]
@@ -116,7 +117,7 @@ def compute_rolling_metrics_top_n(sorted_ts, window_data, model_size_cache, mode
     
     return unique_models, total_memory, total_requests
 
-print("\nComputing 6h rolling metrics for different top-N configurations...")
+print("\nComputing 2h rolling metrics for different top-N configurations...")
 
 # Precompute metrics for each top-N config
 metrics_by_config = {}
@@ -128,8 +129,8 @@ for top_n, label in zip(top_n_configs, config_labels):
 
 print("Generating plot...")
 
-# Create 3-subplot figure
-fig, (ax1, ax2, ax3) = plt.subplots(3, 1, figsize=(16, 14), sharex=True)
+# Create single subplot figure
+fig, ax1 = plt.subplots(1, 1, figsize=(16, 6))
 
 # Plot 1: Total Memory Usage
 for label, color in zip(config_labels, config_colors):
@@ -139,34 +140,10 @@ for label, color in zip(config_labels, config_colors):
     ax1.plot(plot_times, smoothed, color=color, linewidth=2, label=label)
 
 ax1.set_ylabel('Total Memory (GB)')
-ax1.set_title('Memory Required (6h TTL) - By Top N Models')
+ax1.set_title('Memory Required (2h TTL) - By Top N Models')
+ax1.set_xlabel('Time')
 ax1.legend(loc='upper left', title='Models Included')
 ax1.grid(True, alpha=0.3)
-
-# Plot 2: Total Requests
-for label, color in zip(config_labels, config_colors):
-    _, _, requests = metrics_by_config[label]
-    ax2.plot(plot_times, requests, color=color, linewidth=0.8, alpha=0.2)
-    smoothed = smooth_data(requests)
-    ax2.plot(plot_times, smoothed, color=color, linewidth=2, label=label)
-
-ax2.set_ylabel('Total Requests')
-ax2.set_title('Total Requests (6h Rolling) - By Top N Models')
-ax2.legend(loc='upper left', title='Models Included')
-ax2.grid(True, alpha=0.3)
-
-# Plot 3: Unique Active Models
-for label, color in zip(config_labels, config_colors):
-    unique, _, _ = metrics_by_config[label]
-    ax3.plot(plot_times, unique, color=color, linewidth=0.8, alpha=0.2)
-    smoothed = smooth_data(unique)
-    ax3.plot(plot_times, smoothed, color=color, linewidth=2, label=label)
-
-ax3.set_ylabel('Unique Models')
-ax3.set_title('Unique Models Active (6h Rolling) - By Top N Models')
-ax3.set_xlabel('Time')
-ax3.legend(loc='upper left', title='Models Included')
-ax3.grid(True, alpha=0.3)
 
 plt.xticks(rotation=45)
 plt.tight_layout()
@@ -174,7 +151,7 @@ plt.show()
 
 # Print summary statistics
 print("\n" + "="*60)
-print("SUMMARY: 6h Rolling Window by Top N Models")
+print("SUMMARY: 2h Rolling Window by Top N Models")
 print("="*60)
 for label in config_labels:
     unique, memory, requests = metrics_by_config[label]

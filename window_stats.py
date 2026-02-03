@@ -7,7 +7,8 @@ from datetime import datetime
 from collections import defaultdict
 from utils import estimate_model_size, smooth_data
 
-OMIT_KEYWORD = "405b"
+# OMIT_KEYWORD = "405b"
+OMIT_KEYWORD = None
 
 # Load data
 print("Loading data-15m.json...")
@@ -36,7 +37,7 @@ for frame in frames:
     model_key = labels.get('model_key', 'unknown')
     repo_id = get_repo_id(model_key)
     
-    if OMIT_KEYWORD in repo_id.lower():
+    if OMIT_KEYWORD is not None and OMIT_KEYWORD in repo_id.lower():
         print(f"  Skipping {repo_id} because it contains {OMIT_KEYWORD}")
         continue
 
@@ -70,6 +71,7 @@ rolling_windows = {
     '15min': 1,
     '1h': 4,
     '6h': 24,
+    '12h': 48,
     '24h': 96,
 }
 
@@ -78,6 +80,7 @@ window_colors = {
     '15min': 'tab:green',
     '1h': 'tab:blue',
     '6h': 'tab:orange',
+    '12h': 'tab:purple',
     '24h': 'tab:red',
 }
 
@@ -125,8 +128,8 @@ for window_name, window_size in rolling_windows.items():
 
 print("Generating plot...")
 
-# Create 3-subplot figure
-fig, (ax1, ax2, ax3) = plt.subplots(3, 1, figsize=(16, 14), sharex=True)
+# Create single subplot figure
+fig, ax1 = plt.subplots(1, 1, figsize=(16, 6))
 
 # Plot 1: Total Memory Usage (rolling unique models' memory)
 for window_name in rolling_windows.keys():
@@ -140,39 +143,9 @@ for window_name in rolling_windows.keys():
 
 ax1.set_ylabel('Total Memory (GB)')
 ax1.set_title('Memory Required to Cache All Unique Models (by TTL window)')
+ax1.set_xlabel('Time')
 ax1.legend(loc='upper left', title='Cache TTL')
 ax1.grid(True, alpha=0.3)
-
-# Plot 2: Total Requests (rolling sum)
-for window_name in rolling_windows.keys():
-    _, _, requests = rolling_metrics[window_name]
-    color = window_colors[window_name]
-    # Raw data at low opacity
-    ax2.plot(plot_times, requests, color=color, linewidth=0.8, alpha=0.2)
-    # Smoothed line at full opacity
-    smoothed = smooth_data(requests)
-    ax2.plot(plot_times, smoothed, color=color, linewidth=2, label=window_name)
-
-ax2.set_ylabel('Total Requests')
-ax2.set_title('Total Requests in Rolling Window')
-ax2.legend(loc='upper left', title='Window')
-ax2.grid(True, alpha=0.3)
-
-# Plot 3: Unique Active Models (rolling count)
-for window_name in rolling_windows.keys():
-    unique, _, _ = rolling_metrics[window_name]
-    color = window_colors[window_name]
-    # Raw data at low opacity
-    ax3.plot(plot_times, unique, color=color, linewidth=0.8, alpha=0.2)
-    # Smoothed line at full opacity
-    smoothed = smooth_data(unique)
-    ax3.plot(plot_times, smoothed, color=color, linewidth=2, label=window_name)
-
-ax3.set_ylabel('Unique Models')
-ax3.set_title('Unique Models Seen in Rolling Window')
-ax3.set_xlabel('Time')
-ax3.legend(loc='upper left', title='Window')
-ax3.grid(True, alpha=0.3)
 
 # Improve x-axis formatting
 plt.xticks(rotation=45)

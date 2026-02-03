@@ -1,0 +1,1327 @@
+{
+    "request": {
+      "url": "api/ds/query?ds_type=influxdb&requestId=SQR116",
+      "method": "POST",
+      "data": {
+        "queries": [
+          {
+            "datasource": {
+              "type": "influxdb",
+              "uid": "P951FEA4DE68E13C5"
+            },
+            "query": "from(bucket: \"metrics\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"network_data\")\r\n  |> filter(fn: (r) => r[\"_field\"] == \"network_data\")\r\n  |> drop(columns: [\"request_id\", \"user_agent\", \"ip_address\"])  \r\n  |> window(every: 30d, createEmpty:false)  \r\n  |> distinct(column: \"api_key\")\r\n  |> group(columns: [\"_start\", \"model_key\"], mode:\"by\")  \r\n  |> count(column: \"api_key\")  \r\n  |> map(fn: (r) => ({ r with _time: r._start }))  \r\n  |> drop(columns: [\"_start\"])  \r\n  |> yield(name: \"mean\")",
+            "refId": "A",
+            "datasourceId": 2,
+            "intervalMs": 1800000,
+            "maxDataPoints": 1378
+          }
+        ],
+        "from": "1767456358150",
+        "to": "1770048358150"
+      },
+      "hideFromInspector": false
+    },
+    "response": {
+      "results": {
+        "A": {
+          "status": 200,
+          "frames": [
+            {
+              "schema": {
+                "refId": "A",
+                "meta": {
+                  "typeVersion": [
+                    0,
+                    0
+                  ],
+                  "executedQueryString": "from(bucket: \"metrics\")\r\n  |> range(start: 2026-01-03T16:05:58.15Z, stop: 2026-02-02T16:05:58.15Z)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"network_data\")\r\n  |> filter(fn: (r) => r[\"_field\"] == \"network_data\")\r\n  |> drop(columns: [\"request_id\", \"user_agent\", \"ip_address\"])  \r\n  |> window(every: 30d, createEmpty:false)  \r\n  |> distinct(column: \"api_key\")\r\n  |> group(columns: [\"_start\", \"model_key\"], mode:\"by\")  \r\n  |> count(column: \"api_key\")  \r\n  |> map(fn: (r) => ({ r with _time: r._start }))  \r\n  |> drop(columns: [\"_start\"])  \r\n  |> yield(name: \"mean\")"
+                },
+                "fields": [
+                  {
+                    "name": "_time",
+                    "type": "time",
+                    "typeInfo": {
+                      "frame": "time.Time",
+                      "nullable": true
+                    }
+                  },
+                  {
+                    "name": "api_key",
+                    "type": "number",
+                    "typeInfo": {
+                      "frame": "int64",
+                      "nullable": true
+                    },
+                    "labels": {
+                      "model_key": "nnsight.modeling.huggingface.HuggingFaceModel:{\"repo_id\": \"google/mt5-base\", \"revision\": null}"
+                    }
+                  }
+                ]
+              },
+              "data": {
+                "values": [
+                  [
+                    1767456358150
+                  ],
+                  [
+                    1
+                  ]
+                ]
+              }
+            },
+            {
+              "schema": {
+                "refId": "A",
+                "fields": [
+                  {
+                    "name": "_time",
+                    "type": "time",
+                    "typeInfo": {
+                      "frame": "time.Time",
+                      "nullable": true
+                    }
+                  },
+                  {
+                    "name": "api_key",
+                    "type": "number",
+                    "typeInfo": {
+                      "frame": "int64",
+                      "nullable": true
+                    },
+                    "labels": {
+                      "model_key": "nnsight.modeling.language.LanguageModel:{\"repo_id\": \"EleutherAI/gpt-j-6b\", \"revision\": null}"
+                    }
+                  }
+                ]
+              },
+              "data": {
+                "values": [
+                  [
+                    1767456358150,
+                    1767744000000
+                  ],
+                  [
+                    5,
+                    9
+                  ]
+                ]
+              }
+            },
+            {
+              "schema": {
+                "refId": "A",
+                "fields": [
+                  {
+                    "name": "_time",
+                    "type": "time",
+                    "typeInfo": {
+                      "frame": "time.Time",
+                      "nullable": true
+                    }
+                  },
+                  {
+                    "name": "api_key",
+                    "type": "number",
+                    "typeInfo": {
+                      "frame": "int64",
+                      "nullable": true
+                    },
+                    "labels": {
+                      "model_key": "nnsight.modeling.language.LanguageModel:{\"repo_id\": \"Maykeye/TinyLLama-v0\", \"revision\": null, \"rename\": {\"transformer\": \"model\", \"gpt_neox\": \"model\", \"decoder\": \"model\", \"language_model\": \"model\", \"h\": \"layers\", \"blocks\": \"layers\", \"model.layers\": \"layers\", \"model.transformer.layers\": \"layers\", \"model.gpt_neox.layers\": \"layers\", \"model.decoder.layers\": \"layers\", \"model.language_model.layers\": \"layers\", \"attn\": \"self_attn\", \"self_attention\": \"self_attn\", \"attention\": \"self_attn\", \"norm_attn_norm\": \"self_attn\", \"block_sparse_moe\": \"mlp\", \"ffn\": \"mlp\", \"final_layer_norm\": \"ln_final\", \"ln_f\": \"ln_final\", \"norm_f\": \"ln_final\", \"norm\": \"ln_final\", \"embedding_norm\": \"ln_final\", \"model.ln_final\": \"ln_final\", \"model.transformer.ln_final\": \"ln_final\", \"model.gpt_neox.ln_final\": \"ln_final\", \"model.decoder.ln_final\": \"ln_final\", \"model.language_model.ln_final\": \"ln_final\", \"embed_out\": \"lm_head\", \"wte\": \"embed_tokens\", \"embed_in\": \"embed_tokens\", \"word_embeddings\": \"embed_tokens\", \"model.embed_tokens\": \"embed_tokens\", \"model.transformer.embed_tokens\": \"embed_tokens\", \"model.gpt_neox.embed_tokens\": \"embed_tokens\", \"model.decoder.embed_tokens\": \"embed_tokens\", \"model.language_model.embed_tokens\": \"embed_tokens\"}}"
+                    }
+                  }
+                ]
+              },
+              "data": {
+                "values": [
+                  [
+                    1767744000000
+                  ],
+                  [
+                    1
+                  ]
+                ]
+              }
+            },
+            {
+              "schema": {
+                "refId": "A",
+                "fields": [
+                  {
+                    "name": "_time",
+                    "type": "time",
+                    "typeInfo": {
+                      "frame": "time.Time",
+                      "nullable": true
+                    }
+                  },
+                  {
+                    "name": "api_key",
+                    "type": "number",
+                    "typeInfo": {
+                      "frame": "int64",
+                      "nullable": true
+                    },
+                    "labels": {
+                      "model_key": "nnsight.modeling.language.LanguageModel:{\"repo_id\": \"Maykeye/TinyLLama-v0\", \"revision\": null}"
+                    }
+                  }
+                ]
+              },
+              "data": {
+                "values": [
+                  [
+                    1767744000000
+                  ],
+                  [
+                    2
+                  ]
+                ]
+              }
+            },
+            {
+              "schema": {
+                "refId": "A",
+                "fields": [
+                  {
+                    "name": "_time",
+                    "type": "time",
+                    "typeInfo": {
+                      "frame": "time.Time",
+                      "nullable": true
+                    }
+                  },
+                  {
+                    "name": "api_key",
+                    "type": "number",
+                    "typeInfo": {
+                      "frame": "int64",
+                      "nullable": true
+                    },
+                    "labels": {
+                      "model_key": "nnsight.modeling.language.LanguageModel:{\"repo_id\": \"Qwen/QwQ-32B\", \"revision\": null}"
+                    }
+                  }
+                ]
+              },
+              "data": {
+                "values": [
+                  [
+                    1767744000000
+                  ],
+                  [
+                    1
+                  ]
+                ]
+              }
+            },
+            {
+              "schema": {
+                "refId": "A",
+                "fields": [
+                  {
+                    "name": "_time",
+                    "type": "time",
+                    "typeInfo": {
+                      "frame": "time.Time",
+                      "nullable": true
+                    }
+                  },
+                  {
+                    "name": "api_key",
+                    "type": "number",
+                    "typeInfo": {
+                      "frame": "int64",
+                      "nullable": true
+                    },
+                    "labels": {
+                      "model_key": "nnsight.modeling.language.LanguageModel:{\"repo_id\": \"Qwen/Qwen2.5-0.5B-Instruct\", \"revision\": null}"
+                    }
+                  }
+                ]
+              },
+              "data": {
+                "values": [
+                  [
+                    1767744000000
+                  ],
+                  [
+                    1
+                  ]
+                ]
+              }
+            },
+            {
+              "schema": {
+                "refId": "A",
+                "fields": [
+                  {
+                    "name": "_time",
+                    "type": "time",
+                    "typeInfo": {
+                      "frame": "time.Time",
+                      "nullable": true
+                    }
+                  },
+                  {
+                    "name": "api_key",
+                    "type": "number",
+                    "typeInfo": {
+                      "frame": "int64",
+                      "nullable": true
+                    },
+                    "labels": {
+                      "model_key": "nnsight.modeling.language.LanguageModel:{\"repo_id\": \"Qwen/Qwen2.5-72B-Instruct\", \"revision\": null}"
+                    }
+                  }
+                ]
+              },
+              "data": {
+                "values": [
+                  [
+                    1767456358150,
+                    1767744000000
+                  ],
+                  [
+                    1,
+                    3
+                  ]
+                ]
+              }
+            },
+            {
+              "schema": {
+                "refId": "A",
+                "fields": [
+                  {
+                    "name": "_time",
+                    "type": "time",
+                    "typeInfo": {
+                      "frame": "time.Time",
+                      "nullable": true
+                    }
+                  },
+                  {
+                    "name": "api_key",
+                    "type": "number",
+                    "typeInfo": {
+                      "frame": "int64",
+                      "nullable": true
+                    },
+                    "labels": {
+                      "model_key": "nnsight.modeling.language.LanguageModel:{\"repo_id\": \"Qwen/Qwen2.5-Coder-7B-Instruct\", \"revision\": null}"
+                    }
+                  }
+                ]
+              },
+              "data": {
+                "values": [
+                  [
+                    1767744000000
+                  ],
+                  [
+                    3
+                  ]
+                ]
+              }
+            },
+            {
+              "schema": {
+                "refId": "A",
+                "fields": [
+                  {
+                    "name": "_time",
+                    "type": "time",
+                    "typeInfo": {
+                      "frame": "time.Time",
+                      "nullable": true
+                    }
+                  },
+                  {
+                    "name": "api_key",
+                    "type": "number",
+                    "typeInfo": {
+                      "frame": "int64",
+                      "nullable": true
+                    },
+                    "labels": {
+                      "model_key": "nnsight.modeling.language.LanguageModel:{\"repo_id\": \"Qwen/Qwen3-32B\", \"revision\": null}"
+                    }
+                  }
+                ]
+              },
+              "data": {
+                "values": [
+                  [
+                    1767744000000
+                  ],
+                  [
+                    1
+                  ]
+                ]
+              }
+            },
+            {
+              "schema": {
+                "refId": "A",
+                "fields": [
+                  {
+                    "name": "_time",
+                    "type": "time",
+                    "typeInfo": {
+                      "frame": "time.Time",
+                      "nullable": true
+                    }
+                  },
+                  {
+                    "name": "api_key",
+                    "type": "number",
+                    "typeInfo": {
+                      "frame": "int64",
+                      "nullable": true
+                    },
+                    "labels": {
+                      "model_key": "nnsight.modeling.language.LanguageModel:{\"repo_id\": \"Qwen/Qwen3-8B\", \"revision\": null}"
+                    }
+                  }
+                ]
+              },
+              "data": {
+                "values": [
+                  [
+                    1767744000000
+                  ],
+                  [
+                    1
+                  ]
+                ]
+              }
+            },
+            {
+              "schema": {
+                "refId": "A",
+                "fields": [
+                  {
+                    "name": "_time",
+                    "type": "time",
+                    "typeInfo": {
+                      "frame": "time.Time",
+                      "nullable": true
+                    }
+                  },
+                  {
+                    "name": "api_key",
+                    "type": "number",
+                    "typeInfo": {
+                      "frame": "int64",
+                      "nullable": true
+                    },
+                    "labels": {
+                      "model_key": "nnsight.modeling.language.LanguageModel:{\"repo_id\": \"allenai/Olmo-3-1025-7B\", \"revision\": null}"
+                    }
+                  }
+                ]
+              },
+              "data": {
+                "values": [
+                  [
+                    1767456358150,
+                    1767744000000
+                  ],
+                  [
+                    1,
+                    3
+                  ]
+                ]
+              }
+            },
+            {
+              "schema": {
+                "refId": "A",
+                "fields": [
+                  {
+                    "name": "_time",
+                    "type": "time",
+                    "typeInfo": {
+                      "frame": "time.Time",
+                      "nullable": true
+                    }
+                  },
+                  {
+                    "name": "api_key",
+                    "type": "number",
+                    "typeInfo": {
+                      "frame": "int64",
+                      "nullable": true
+                    },
+                    "labels": {
+                      "model_key": "nnsight.modeling.language.LanguageModel:{\"repo_id\": \"deepseek-ai/deepseek-coder-7b-instruct-v1.5\", \"revision\": null}"
+                    }
+                  }
+                ]
+              },
+              "data": {
+                "values": [
+                  [
+                    1767744000000
+                  ],
+                  [
+                    3
+                  ]
+                ]
+              }
+            },
+            {
+              "schema": {
+                "refId": "A",
+                "fields": [
+                  {
+                    "name": "_time",
+                    "type": "time",
+                    "typeInfo": {
+                      "frame": "time.Time",
+                      "nullable": true
+                    }
+                  },
+                  {
+                    "name": "api_key",
+                    "type": "number",
+                    "typeInfo": {
+                      "frame": "int64",
+                      "nullable": true
+                    },
+                    "labels": {
+                      "model_key": "nnsight.modeling.language.LanguageModel:{\"repo_id\": \"google/codegemma-7b-it\", \"revision\": null}"
+                    }
+                  }
+                ]
+              },
+              "data": {
+                "values": [
+                  [
+                    1767744000000
+                  ],
+                  [
+                    3
+                  ]
+                ]
+              }
+            },
+            {
+              "schema": {
+                "refId": "A",
+                "fields": [
+                  {
+                    "name": "_time",
+                    "type": "time",
+                    "typeInfo": {
+                      "frame": "time.Time",
+                      "nullable": true
+                    }
+                  },
+                  {
+                    "name": "api_key",
+                    "type": "number",
+                    "typeInfo": {
+                      "frame": "int64",
+                      "nullable": true
+                    },
+                    "labels": {
+                      "model_key": "nnsight.modeling.language.LanguageModel:{\"repo_id\": \"google/gemma-2-27b-it\", \"revision\": null}"
+                    }
+                  }
+                ]
+              },
+              "data": {
+                "values": [
+                  [
+                    1767744000000
+                  ],
+                  [
+                    1
+                  ]
+                ]
+              }
+            },
+            {
+              "schema": {
+                "refId": "A",
+                "fields": [
+                  {
+                    "name": "_time",
+                    "type": "time",
+                    "typeInfo": {
+                      "frame": "time.Time",
+                      "nullable": true
+                    }
+                  },
+                  {
+                    "name": "api_key",
+                    "type": "number",
+                    "typeInfo": {
+                      "frame": "int64",
+                      "nullable": true
+                    },
+                    "labels": {
+                      "model_key": "nnsight.modeling.language.LanguageModel:{\"repo_id\": \"google/gemma-2-2b\", \"revision\": null}"
+                    }
+                  }
+                ]
+              },
+              "data": {
+                "values": [
+                  [
+                    1767744000000
+                  ],
+                  [
+                    3
+                  ]
+                ]
+              }
+            },
+            {
+              "schema": {
+                "refId": "A",
+                "fields": [
+                  {
+                    "name": "_time",
+                    "type": "time",
+                    "typeInfo": {
+                      "frame": "time.Time",
+                      "nullable": true
+                    }
+                  },
+                  {
+                    "name": "api_key",
+                    "type": "number",
+                    "typeInfo": {
+                      "frame": "int64",
+                      "nullable": true
+                    },
+                    "labels": {
+                      "model_key": "nnsight.modeling.language.LanguageModel:{\"repo_id\": \"google/gemma-2-9b-it\", \"revision\": null}"
+                    }
+                  }
+                ]
+              },
+              "data": {
+                "values": [
+                  [
+                    1767744000000
+                  ],
+                  [
+                    7
+                  ]
+                ]
+              }
+            },
+            {
+              "schema": {
+                "refId": "A",
+                "fields": [
+                  {
+                    "name": "_time",
+                    "type": "time",
+                    "typeInfo": {
+                      "frame": "time.Time",
+                      "nullable": true
+                    }
+                  },
+                  {
+                    "name": "api_key",
+                    "type": "number",
+                    "typeInfo": {
+                      "frame": "int64",
+                      "nullable": true
+                    },
+                    "labels": {
+                      "model_key": "nnsight.modeling.language.LanguageModel:{\"repo_id\": \"google/gemma-3-12b-it\", \"revision\": null}"
+                    }
+                  }
+                ]
+              },
+              "data": {
+                "values": [
+                  [
+                    1767744000000
+                  ],
+                  [
+                    4
+                  ]
+                ]
+              }
+            },
+            {
+              "schema": {
+                "refId": "A",
+                "fields": [
+                  {
+                    "name": "_time",
+                    "type": "time",
+                    "typeInfo": {
+                      "frame": "time.Time",
+                      "nullable": true
+                    }
+                  },
+                  {
+                    "name": "api_key",
+                    "type": "number",
+                    "typeInfo": {
+                      "frame": "int64",
+                      "nullable": true
+                    },
+                    "labels": {
+                      "model_key": "nnsight.modeling.language.LanguageModel:{\"repo_id\": \"meta-llama/Llama-2-7b\", \"revision\": null}"
+                    }
+                  }
+                ]
+              },
+              "data": {
+                "values": [
+                  [
+                    1767744000000
+                  ],
+                  [
+                    1
+                  ]
+                ]
+              }
+            },
+            {
+              "schema": {
+                "refId": "A",
+                "fields": [
+                  {
+                    "name": "_time",
+                    "type": "time",
+                    "typeInfo": {
+                      "frame": "time.Time",
+                      "nullable": true
+                    }
+                  },
+                  {
+                    "name": "api_key",
+                    "type": "number",
+                    "typeInfo": {
+                      "frame": "int64",
+                      "nullable": true
+                    },
+                    "labels": {
+                      "model_key": "nnsight.modeling.language.LanguageModel:{\"repo_id\": \"meta-llama/Llama-2-7b-chat-hf\", \"revision\": null}"
+                    }
+                  }
+                ]
+              },
+              "data": {
+                "values": [
+                  [
+                    1767744000000
+                  ],
+                  [
+                    2
+                  ]
+                ]
+              }
+            },
+            {
+              "schema": {
+                "refId": "A",
+                "fields": [
+                  {
+                    "name": "_time",
+                    "type": "time",
+                    "typeInfo": {
+                      "frame": "time.Time",
+                      "nullable": true
+                    }
+                  },
+                  {
+                    "name": "api_key",
+                    "type": "number",
+                    "typeInfo": {
+                      "frame": "int64",
+                      "nullable": true
+                    },
+                    "labels": {
+                      "model_key": "nnsight.modeling.language.LanguageModel:{\"repo_id\": \"meta-llama/Llama-2-7b-hf\", \"revision\": null}"
+                    }
+                  }
+                ]
+              },
+              "data": {
+                "values": [
+                  [
+                    1767456358150,
+                    1767744000000
+                  ],
+                  [
+                    1,
+                    8
+                  ]
+                ]
+              }
+            },
+            {
+              "schema": {
+                "refId": "A",
+                "fields": [
+                  {
+                    "name": "_time",
+                    "type": "time",
+                    "typeInfo": {
+                      "frame": "time.Time",
+                      "nullable": true
+                    }
+                  },
+                  {
+                    "name": "api_key",
+                    "type": "number",
+                    "typeInfo": {
+                      "frame": "int64",
+                      "nullable": true
+                    },
+                    "labels": {
+                      "model_key": "nnsight.modeling.language.LanguageModel:{\"repo_id\": \"meta-llama/Llama-3.1-405B\", \"revision\": null}"
+                    }
+                  }
+                ]
+              },
+              "data": {
+                "values": [
+                  [
+                    1767456358150,
+                    1767744000000
+                  ],
+                  [
+                    2,
+                    6
+                  ]
+                ]
+              }
+            },
+            {
+              "schema": {
+                "refId": "A",
+                "fields": [
+                  {
+                    "name": "_time",
+                    "type": "time",
+                    "typeInfo": {
+                      "frame": "time.Time",
+                      "nullable": true
+                    }
+                  },
+                  {
+                    "name": "api_key",
+                    "type": "number",
+                    "typeInfo": {
+                      "frame": "int64",
+                      "nullable": true
+                    },
+                    "labels": {
+                      "model_key": "nnsight.modeling.language.LanguageModel:{\"repo_id\": \"meta-llama/Llama-3.1-405B-Instruct\", \"revision\": null}"
+                    }
+                  }
+                ]
+              },
+              "data": {
+                "values": [
+                  [
+                    1767456358150,
+                    1767744000000
+                  ],
+                  [
+                    2,
+                    4
+                  ]
+                ]
+              }
+            },
+            {
+              "schema": {
+                "refId": "A",
+                "fields": [
+                  {
+                    "name": "_time",
+                    "type": "time",
+                    "typeInfo": {
+                      "frame": "time.Time",
+                      "nullable": true
+                    }
+                  },
+                  {
+                    "name": "api_key",
+                    "type": "number",
+                    "typeInfo": {
+                      "frame": "int64",
+                      "nullable": true
+                    },
+                    "labels": {
+                      "model_key": "nnsight.modeling.language.LanguageModel:{\"repo_id\": \"meta-llama/Llama-3.1-70B\", \"revision\": null}"
+                    }
+                  }
+                ]
+              },
+              "data": {
+                "values": [
+                  [
+                    1767456358150,
+                    1767744000000
+                  ],
+                  [
+                    6,
+                    22
+                  ]
+                ]
+              }
+            },
+            {
+              "schema": {
+                "refId": "A",
+                "fields": [
+                  {
+                    "name": "_time",
+                    "type": "time",
+                    "typeInfo": {
+                      "frame": "time.Time",
+                      "nullable": true
+                    }
+                  },
+                  {
+                    "name": "api_key",
+                    "type": "number",
+                    "typeInfo": {
+                      "frame": "int64",
+                      "nullable": true
+                    },
+                    "labels": {
+                      "model_key": "nnsight.modeling.language.LanguageModel:{\"repo_id\": \"meta-llama/Llama-3.1-70B-Instruct\", \"revision\": null}"
+                    }
+                  }
+                ]
+              },
+              "data": {
+                "values": [
+                  [
+                    1767456358150,
+                    1767744000000
+                  ],
+                  [
+                    2,
+                    35
+                  ]
+                ]
+              }
+            },
+            {
+              "schema": {
+                "refId": "A",
+                "fields": [
+                  {
+                    "name": "_time",
+                    "type": "time",
+                    "typeInfo": {
+                      "frame": "time.Time",
+                      "nullable": true
+                    }
+                  },
+                  {
+                    "name": "api_key",
+                    "type": "number",
+                    "typeInfo": {
+                      "frame": "int64",
+                      "nullable": true
+                    },
+                    "labels": {
+                      "model_key": "nnsight.modeling.language.LanguageModel:{\"repo_id\": \"meta-llama/Llama-3.1-8B\", \"revision\": null}"
+                    }
+                  }
+                ]
+              },
+              "data": {
+                "values": [
+                  [
+                    1767456358150,
+                    1767744000000
+                  ],
+                  [
+                    3,
+                    17
+                  ]
+                ]
+              }
+            },
+            {
+              "schema": {
+                "refId": "A",
+                "fields": [
+                  {
+                    "name": "_time",
+                    "type": "time",
+                    "typeInfo": {
+                      "frame": "time.Time",
+                      "nullable": true
+                    }
+                  },
+                  {
+                    "name": "api_key",
+                    "type": "number",
+                    "typeInfo": {
+                      "frame": "int64",
+                      "nullable": true
+                    },
+                    "labels": {
+                      "model_key": "nnsight.modeling.language.LanguageModel:{\"repo_id\": \"meta-llama/Llama-3.1-8B-Instruct\", \"revision\": null}"
+                    }
+                  }
+                ]
+              },
+              "data": {
+                "values": [
+                  [
+                    1767456358150,
+                    1767744000000
+                  ],
+                  [
+                    2,
+                    13
+                  ]
+                ]
+              }
+            },
+            {
+              "schema": {
+                "refId": "A",
+                "fields": [
+                  {
+                    "name": "_time",
+                    "type": "time",
+                    "typeInfo": {
+                      "frame": "time.Time",
+                      "nullable": true
+                    }
+                  },
+                  {
+                    "name": "api_key",
+                    "type": "number",
+                    "typeInfo": {
+                      "frame": "int64",
+                      "nullable": true
+                    },
+                    "labels": {
+                      "model_key": "nnsight.modeling.language.LanguageModel:{\"repo_id\": \"meta-llama/Llama-3.2-1B\", \"revision\": null}"
+                    }
+                  }
+                ]
+              },
+              "data": {
+                "values": [
+                  [
+                    1767744000000
+                  ],
+                  [
+                    2
+                  ]
+                ]
+              }
+            },
+            {
+              "schema": {
+                "refId": "A",
+                "fields": [
+                  {
+                    "name": "_time",
+                    "type": "time",
+                    "typeInfo": {
+                      "frame": "time.Time",
+                      "nullable": true
+                    }
+                  },
+                  {
+                    "name": "api_key",
+                    "type": "number",
+                    "typeInfo": {
+                      "frame": "int64",
+                      "nullable": true
+                    },
+                    "labels": {
+                      "model_key": "nnsight.modeling.language.LanguageModel:{\"repo_id\": \"meta-llama/Llama-3.3-70B-Instruct\", \"revision\": null}"
+                    }
+                  }
+                ]
+              },
+              "data": {
+                "values": [
+                  [
+                    1767456358150,
+                    1767744000000
+                  ],
+                  [
+                    3,
+                    12
+                  ]
+                ]
+              }
+            },
+            {
+              "schema": {
+                "refId": "A",
+                "fields": [
+                  {
+                    "name": "_time",
+                    "type": "time",
+                    "typeInfo": {
+                      "frame": "time.Time",
+                      "nullable": true
+                    }
+                  },
+                  {
+                    "name": "api_key",
+                    "type": "number",
+                    "typeInfo": {
+                      "frame": "int64",
+                      "nullable": true
+                    },
+                    "labels": {
+                      "model_key": "nnsight.modeling.language.LanguageModel:{\"repo_id\": \"meta-llama/Meta-Llama-3-8B\", \"revision\": null}"
+                    }
+                  }
+                ]
+              },
+              "data": {
+                "values": [
+                  [
+                    1767744000000
+                  ],
+                  [
+                    1
+                  ]
+                ]
+              }
+            },
+            {
+              "schema": {
+                "refId": "A",
+                "fields": [
+                  {
+                    "name": "_time",
+                    "type": "time",
+                    "typeInfo": {
+                      "frame": "time.Time",
+                      "nullable": true
+                    }
+                  },
+                  {
+                    "name": "api_key",
+                    "type": "number",
+                    "typeInfo": {
+                      "frame": "int64",
+                      "nullable": true
+                    },
+                    "labels": {
+                      "model_key": "nnsight.modeling.language.LanguageModel:{\"repo_id\": \"microsoft/Phi-3-mini-4k-instruct\", \"revision\": null}"
+                    }
+                  }
+                ]
+              },
+              "data": {
+                "values": [
+                  [
+                    1767744000000
+                  ],
+                  [
+                    1
+                  ]
+                ]
+              }
+            },
+            {
+              "schema": {
+                "refId": "A",
+                "fields": [
+                  {
+                    "name": "_time",
+                    "type": "time",
+                    "typeInfo": {
+                      "frame": "time.Time",
+                      "nullable": true
+                    }
+                  },
+                  {
+                    "name": "api_key",
+                    "type": "number",
+                    "typeInfo": {
+                      "frame": "int64",
+                      "nullable": true
+                    },
+                    "labels": {
+                      "model_key": "nnsight.modeling.language.LanguageModel:{\"repo_id\": \"mistralai/Mistral-7B-Instruct-v0.1\", \"revision\": null}"
+                    }
+                  }
+                ]
+              },
+              "data": {
+                "values": [
+                  [
+                    1767744000000
+                  ],
+                  [
+                    1
+                  ]
+                ]
+              }
+            },
+            {
+              "schema": {
+                "refId": "A",
+                "fields": [
+                  {
+                    "name": "_time",
+                    "type": "time",
+                    "typeInfo": {
+                      "frame": "time.Time",
+                      "nullable": true
+                    }
+                  },
+                  {
+                    "name": "api_key",
+                    "type": "number",
+                    "typeInfo": {
+                      "frame": "int64",
+                      "nullable": true
+                    },
+                    "labels": {
+                      "model_key": "nnsight.modeling.language.LanguageModel:{\"repo_id\": \"nvidia/Llama-3.1-Minitron-4B-Width-Base\", \"revision\": null}"
+                    }
+                  }
+                ]
+              },
+              "data": {
+                "values": [
+                  [
+                    1767744000000
+                  ],
+                  [
+                    1
+                  ]
+                ]
+              }
+            },
+            {
+              "schema": {
+                "refId": "A",
+                "fields": [
+                  {
+                    "name": "_time",
+                    "type": "time",
+                    "typeInfo": {
+                      "frame": "time.Time",
+                      "nullable": true
+                    }
+                  },
+                  {
+                    "name": "api_key",
+                    "type": "number",
+                    "typeInfo": {
+                      "frame": "int64",
+                      "nullable": true
+                    },
+                    "labels": {
+                      "model_key": "nnsight.modeling.language.LanguageModel:{\"repo_id\": \"open-unlearning/tofu_Llama-3.2-1B-Instruct_full\", \"revision\": null}"
+                    }
+                  }
+                ]
+              },
+              "data": {
+                "values": [
+                  [
+                    1767744000000
+                  ],
+                  [
+                    1
+                  ]
+                ]
+              }
+            },
+            {
+              "schema": {
+                "refId": "A",
+                "fields": [
+                  {
+                    "name": "_time",
+                    "type": "time",
+                    "typeInfo": {
+                      "frame": "time.Time",
+                      "nullable": true
+                    }
+                  },
+                  {
+                    "name": "api_key",
+                    "type": "number",
+                    "typeInfo": {
+                      "frame": "int64",
+                      "nullable": true
+                    },
+                    "labels": {
+                      "model_key": "nnsight.modeling.language.LanguageModel:{\"repo_id\": \"openai-community/gpt2\", \"revision\": null}"
+                    }
+                  }
+                ]
+              },
+              "data": {
+                "values": [
+                  [
+                    1767456358150,
+                    1767744000000
+                  ],
+                  [
+                    7,
+                    20
+                  ]
+                ]
+              }
+            },
+            {
+              "schema": {
+                "refId": "A",
+                "fields": [
+                  {
+                    "name": "_time",
+                    "type": "time",
+                    "typeInfo": {
+                      "frame": "time.Time",
+                      "nullable": true
+                    }
+                  },
+                  {
+                    "name": "api_key",
+                    "type": "number",
+                    "typeInfo": {
+                      "frame": "int64",
+                      "nullable": true
+                    },
+                    "labels": {
+                      "model_key": "nnsight.modeling.language.LanguageModel:{\"repo_id\": \"openai/gpt-oss-20b\", \"revision\": null}"
+                    }
+                  }
+                ]
+              },
+              "data": {
+                "values": [
+                  [
+                    1767456358150,
+                    1767744000000
+                  ],
+                  [
+                    1,
+                    1
+                  ]
+                ]
+              }
+            }
+          ],
+          "refId": "A"
+        }
+      }
+    }
+  }

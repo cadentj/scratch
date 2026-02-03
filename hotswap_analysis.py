@@ -12,8 +12,9 @@ from utils.estimate import estimate_model_size
 # ============================================================
 # Rolling window size for cache TTL simulation (in 15-min slots)
 # 6 hours = 24 slots, 1 hour = 4 slots, 24 hours = 96 slots
-WINDOW_SIZE = 24  # 6 hours
-OMIT_KEYWORD = "405b"
+WINDOW_SIZE = 1  # 6 hours
+# OMIT_KEYWORD = "405b"
+OMIT_KEYWORD = None
 # ============================================================
 
 # Load data
@@ -43,7 +44,7 @@ for frame in frames:
     model_key = labels.get('model_key', 'unknown')
     repo_id = get_repo_id(model_key)
     
-    if OMIT_KEYWORD in repo_id.lower():
+    if OMIT_KEYWORD is not None and OMIT_KEYWORD in repo_id.lower():
         print(f"  Skipping {repo_id} because it contains {OMIT_KEYWORD}")
         continue
 
@@ -122,8 +123,8 @@ for i in range(len(sorted_ts)):
 
 print("Generating plot...")
 
-# Create 3-subplot figure
-fig, (ax1, ax2, ax3) = plt.subplots(3, 1, figsize=(16, 14), sharex=True)
+# Create 2-subplot figure
+fig, (ax1, ax3) = plt.subplots(2, 1, figsize=(16, 10), sharex=True)
 
 window_label = f"{window_hours:.0f}h" if window_hours >= 1 else f"{WINDOW_SIZE * 15}min"
 
@@ -137,18 +138,7 @@ ax1.legend(loc='upper left')
 ax1.grid(True, alpha=0.3)
 ax1.axhline(y=0, color='black', linewidth=0.5)
 
-# Plot 2: Memory Churn (GB entering, exiting, net)
-ax2.plot(plot_times, memory_entering, color='tab:green', linewidth=1, label='Memory entering (GB)')
-ax2.plot(plot_times, memory_exiting, color='tab:red', linewidth=1, label='Memory exiting (GB)')
-ax2.plot(plot_times, memory_churn, color='tab:blue', linewidth=1, linestyle='--', label='Net churn (GB)')
-
-ax2.set_ylabel('Memory (GB)')
-ax2.set_title(f'Memory Churn: GB of Models Swapping In/Out ({window_label} TTL)')
-ax2.legend(loc='upper left')
-ax2.grid(True, alpha=0.3)
-ax2.axhline(y=0, color='black', linewidth=0.5)
-
-# Plot 3: Overlap Ratio
+# Plot 2: Overlap Ratio
 ax3.plot(plot_times, overlap_ratio, color='tab:purple', linewidth=1, label='Overlap ratio')
 
 ax3.set_ylabel('Overlap (%)')
