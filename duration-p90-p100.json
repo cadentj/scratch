@@ -1,0 +1,94 @@
+[
+    {
+      "schema": {
+        "refId": "A",
+        "meta": {
+          "typeVersion": [
+            0,
+            0
+          ],
+          "executedQueryString": "data = from(bucket: \"metrics\")\n  |> range(start: -30d)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"request_status_time\")\n  |> filter(fn: (r) => r[\"_field\"] == \"request_status_time\")\n  |> filter(fn: (r) => r[\"status\"] == \"RUNNING\")\n  |> group()\n\np900 = data |> quantile(q: 0.900) |> set(key: \"percentile\", value: \"p90.0\")\np905 = data |> quantile(q: 0.905) |> set(key: \"percentile\", value: \"p90.5\")\np910 = data |> quantile(q: 0.910) |> set(key: \"percentile\", value: \"p91.0\")\np915 = data |> quantile(q: 0.915) |> set(key: \"percentile\", value: \"p91.5\")\np920 = data |> quantile(q: 0.920) |> set(key: \"percentile\", value: \"p92.0\")\np925 = data |> quantile(q: 0.925) |> set(key: \"percentile\", value: \"p92.5\")\np930 = data |> quantile(q: 0.930) |> set(key: \"percentile\", value: \"p93.0\")\np935 = data |> quantile(q: 0.935) |> set(key: \"percentile\", value: \"p93.5\")\np940 = data |> quantile(q: 0.940) |> set(key: \"percentile\", value: \"p94.0\")\np945 = data |> quantile(q: 0.945) |> set(key: \"percentile\", value: \"p94.5\")\np950 = data |> quantile(q: 0.950) |> set(key: \"percentile\", value: \"p95.0\")\np955 = data |> quantile(q: 0.955) |> set(key: \"percentile\", value: \"p95.5\")\np960 = data |> quantile(q: 0.960) |> set(key: \"percentile\", value: \"p96.0\")\np965 = data |> quantile(q: 0.965) |> set(key: \"percentile\", value: \"p96.5\")\np970 = data |> quantile(q: 0.970) |> set(key: \"percentile\", value: \"p97.0\")\np975 = data |> quantile(q: 0.975) |> set(key: \"percentile\", value: \"p97.5\")\np980 = data |> quantile(q: 0.980) |> set(key: \"percentile\", value: \"p98.0\")\np985 = data |> quantile(q: 0.985) |> set(key: \"percentile\", value: \"p98.5\")\np990 = data |> quantile(q: 0.990) |> set(key: \"percentile\", value: \"p99.0\")\np995 = data |> quantile(q: 0.995) |> set(key: \"percentile\", value: \"p99.5\")\np1000 = data |> quantile(q: 1.000) |> set(key: \"percentile\", value: \"p100.0\")\n\nunion(tables: [p900, p905, p910, p915, p920, p925, p930, p935, p940, p945, p950, p955, p960, p965, p970, p975, p980, p985, p990, p995, p1000])\n  |> group()\n  |> keep(columns: [\"percentile\", \"_value\"])\n  |> rename(columns: {_value: \"runtime_seconds\"})"
+        },
+        "fields": [
+          {
+            "name": "runtime_seconds",
+            "type": "number",
+            "typeInfo": {
+              "frame": "float64",
+              "nullable": true
+            },
+            "labels": {},
+            "config": {
+              "custom": {
+                "hidden": false
+              }
+            }
+          },
+          {
+            "name": "percentile",
+            "type": "string",
+            "typeInfo": {
+              "frame": "string",
+              "nullable": true
+            },
+            "labels": {},
+            "config": {
+              "custom": {
+                "hidden": false
+              }
+            }
+          }
+        ]
+      },
+      "data": {
+        "values": [
+          [
+            8.391834392299726,
+            8.656599091713584,
+            8.983103206918736,
+            9.306482293475419,
+            9.708704628598896,
+            10.115001225267932,
+            10.620796955185092,
+            11.320952900694362,
+            12.008752066753628,
+            12.698327914268246,
+            13.349753385252159,
+            14.109166796874682,
+            15.255331408348225,
+            17.38471116050152,
+            20.412716889881647,
+            23.552936926675383,
+            26.6462007215148,
+            28.771684754101404,
+            37.026029412256555,
+            53.87599089650116,
+            7497.794036388397
+          ],
+          [
+            "p90.0",
+            "p90.5",
+            "p91.0",
+            "p91.5",
+            "p92.0",
+            "p92.5",
+            "p93.0",
+            "p93.5",
+            "p94.0",
+            "p94.5",
+            "p95.0",
+            "p95.5",
+            "p96.0",
+            "p96.5",
+            "p97.0",
+            "p97.5",
+            "p98.0",
+            "p98.5",
+            "p99.0",
+            "p99.5",
+            "p100.0"
+          ]
+        ]
+      }
+    }
+  ]

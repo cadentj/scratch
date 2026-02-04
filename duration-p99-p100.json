@@ -1,0 +1,74 @@
+[
+    {
+      "schema": {
+        "refId": "A",
+        "meta": {
+          "typeVersion": [
+            0,
+            0
+          ],
+          "executedQueryString": "data = from(bucket: \"metrics\")\n  |> range(start: -30d)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"request_status_time\")\n  |> filter(fn: (r) => r[\"_field\"] == \"request_status_time\")\n  |> filter(fn: (r) => r[\"status\"] == \"RUNNING\")\n  |> group()\n\np99 = data |> quantile(q: 0.99) |> set(key: \"percentile\", value: \"p99.0\")\np991 = data |> quantile(q: 0.991) |> set(key: \"percentile\", value: \"p99.1\")\np992 = data |> quantile(q: 0.992) |> set(key: \"percentile\", value: \"p99.2\")\np993 = data |> quantile(q: 0.993) |> set(key: \"percentile\", value: \"p99.3\")\np994 = data |> quantile(q: 0.994) |> set(key: \"percentile\", value: \"p99.4\")\np995 = data |> quantile(q: 0.995) |> set(key: \"percentile\", value: \"p99.5\")\np996 = data |> quantile(q: 0.996) |> set(key: \"percentile\", value: \"p99.6\")\np997 = data |> quantile(q: 0.997) |> set(key: \"percentile\", value: \"p99.7\")\np998 = data |> quantile(q: 0.998) |> set(key: \"percentile\", value: \"p99.8\")\np999 = data |> quantile(q: 0.999) |> set(key: \"percentile\", value: \"p99.9\")\np1000 = data |> quantile(q: 1.000) |> set(key: \"percentile\", value: \"p100.0\")\n\nunion(tables: [p99, p991, p992, p993, p994, p995, p996, p997, p998, p999, p1000])\n  |> group()\n  |> keep(columns: [\"percentile\", \"_value\"])\n  |> rename(columns: {_value: \"runtime_seconds\"})"
+        },
+        "fields": [
+          {
+            "name": "runtime_seconds",
+            "type": "number",
+            "typeInfo": {
+              "frame": "float64",
+              "nullable": true
+            },
+            "labels": {},
+            "config": {
+              "custom": {
+                "hidden": false
+              }
+            }
+          },
+          {
+            "name": "percentile",
+            "type": "string",
+            "typeInfo": {
+              "frame": "string",
+              "nullable": true
+            },
+            "labels": {},
+            "config": {
+              "custom": {
+                "hidden": false
+              }
+            }
+          }
+        ]
+      },
+      "data": {
+        "values": [
+          [
+            37.02985795810526,
+            40.58050657153743,
+            46.61691868732996,
+            50.39052401923677,
+            52.86943841727158,
+            53.895594346281484,
+            55.66142630271081,
+            66.52437866800341,
+            79.14792182913352,
+            81.75368147180401,
+            7497.794036388397
+          ],
+          [
+            "p99.0",
+            "p99.1",
+            "p99.2",
+            "p99.3",
+            "p99.4",
+            "p99.5",
+            "p99.6",
+            "p99.7",
+            "p99.8",
+            "p99.9",
+            "p100.0"
+          ]
+        ]
+      }
+    }
+  ]
